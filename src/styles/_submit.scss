@@ -1,0 +1,13 @@
+.submit {
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    
+        input, textarea, button {
+            margin-bottom: 20px;
+        }
+    }
+
+}

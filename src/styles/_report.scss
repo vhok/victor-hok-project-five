@@ -1,0 +1,22 @@
+.report {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    ul {
+        padding: 20px;
+        align-self: flex-start;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    
+        input, textarea, select, button {
+            margin-bottom: 20px;
+        }
+    }
+
+}
