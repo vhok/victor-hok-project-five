@@ -1,60 +1,18 @@
 import { Component } from 'react';
 import { ReactComponent as Mascot } from './assets/duck-mascot.svg' // Just wanted to experiment with importing svgs as Components
 import firebase from './firebase';
+import IssueForm from './IssueForm';
+import IssueReport from './IssueReport';
 import './styles/style.scss';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      issueList: [],
-      /**
-       * bugList: [ {issue} ]
-       * issue = {
-       * title: <title>,
-       * details: <details>,
-       * status: <status>
-       * }
-       * */ 
-
-      // Placeholders to "grab" current value.
-      issueTitle: '',
-      issueDetails: ''
+      formActive: true,
+      reportActive: false
     };
   }
-
-  submitIssueHandler = (event) => {
-    event.preventDefault();
-    // console.log(this.state.issueTitle);
-    // console.log(this.state.issueDetails);
-
-    const dbRef = firebase.database().ref();
-
-    dbRef.push({
-      title: this.state.issueTitle,
-      details: this.state.issueDetails,
-      status: "open"
-    });
-
-    this.setState({
-      issueTitle: '',
-      issueDetails: ''
-    })
-
-  }
-
-  inputIssueTitleHandler = (event) => {
-    this.setState({
-      issueTitle: event.target.value
-    });
-  }
-
-  inputIssueDetailsHandler = (event) => {
-    this.setState({
-      issueDetails: event.target.value
-    });
-  }
-
 
   componentDidMount() {
     const dbRef = firebase.database().ref();
@@ -62,7 +20,6 @@ class App extends Component {
     dbRef.on('value', (data) => {
       console.log(data.val());
     });
-
   }
 
   render() {
@@ -82,45 +39,13 @@ class App extends Component {
           
           <div className="wrapper">
             <nav>
-              <ul>
-                <li><button>Submit Issue</button></li>
-                <li><button>View Report</button></li>
-              </ul>
+              <ol>
+                <li><button onClick={ () => { this.setState({formActive: true, reportActive: false}) }}>Submit Issue</button></li>
+                <li><button onClick={ () => { this.setState({ formActive: false, reportActive: true }) }}>View Report</button></li>
+              </ol>
             </nav>
-            <div className="submit">
-              <form className="submit__form" onSubmit={ this.submitIssueHandler }>
-                <h2>A new bug has been discovered in the wild! 🔍</h2>
-                <label htmlFor="submit__input-title">Issue Title</label>
-                <input type="text" id="submit__input-title" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle}/>
-                <label htmlFor="submit__input-details">Details</label>
-                <textarea id="submit__input-details" cols="30" rows="10" required onChange={this.inputIssueDetailsHandler} value={this.state.issueDetails}></textarea>
-                <button type="submit">Submit</button>
-                {/* NEED TO PROVIDE ID BACK TO USER AT SOME POINT FOR REFERENCE */}
-              </form>
-            </div>
-
-            <div className="report">
-              <ul>
-                <li><button>Issue 1</button></li>
-                <li><button>Issue 2</button></li>
-                <li><button>Issue 3</button></li>
-              </ul>
-              <form>
-                <label htmlFor="report__input-id">ID</label>
-                <input type="text" id="report__input-id" readOnly />
-                <label htmlFor="report__input-title">Title</label>
-                <input type="text" id="report__input-title"/>
-                <label htmlFor="report__input-details">Details</label>
-                <textarea id="report__input-details" cols="30" rows="10"></textarea>
-                <label htmlFor="report__input-status">Status</label>
-                <select id="report__select-status">
-                  <option value="open">Open</option>
-                  <option value="wip">In Progress</option>
-                  <option value="closed">Closed</option>
-                </select>
-                <button>Respond [Inactive]</button>
-              </form>
-            </div>
+            {this.state.formActive ? <IssueForm/> : null}
+            {this.state.reportActive ? <IssueReport/> : null}
           </div>
         </main>
 

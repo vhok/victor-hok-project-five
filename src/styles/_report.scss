@@ -3,9 +3,10 @@
     justify-content: center;
     align-items: center;
     
-    ul {
+    ol {
         padding: 20px;
         align-self: flex-start;
+        overflow-y: auto;
     }
 
     form {
