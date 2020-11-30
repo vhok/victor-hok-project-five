@@ -16,12 +16,54 @@ class IssueReport extends Component {
          * date: <date> (in milliseconds for JavaScript Date() constructor )
          * }
          * */
-        issueSelected: null
+        
+        issueSelected: {
+            id: '',
+            title: '',
+            details: '',
+            date: '',
+            status: ''
+        }
         };
     }
 
     issueSelectHandler = (event) => {
-        console.log(event.target.getAttribute('data-key'));
+        const dataKey = event.target.getAttribute('data-key');
+        const selectedIndex = this.state.issueList.findIndex( issue => issue.id === dataKey)
+        const issueObj = {};
+
+        for(let property in this.state.issueSelected) {
+            issueObj[property] = this.state.issueList[selectedIndex][property];
+        }
+
+        this.setState({issueSelected: issueObj});
+    }
+
+    inputEditTitleHandler = (event) => {
+        // Use updater function
+        this.setState( prevState => {
+            const issueSelected = { ...prevState.issueSelected };
+            issueSelected.title = event.target.value;
+            return { issueSelected };
+        });
+    }
+
+    inputEditDetailsHandler = (event) => {
+        // Use updater function
+        this.setState(prevState => {
+            const issueSelected = { ...prevState.issueSelected };
+            issueSelected.details = event.target.value;
+            return { issueSelected };
+        });
+    }
+
+    inputEditStatusHandler = (event) => {
+        // Use updater function
+        this.setState(prevState => {
+            const issueSelected = { ...prevState.issueSelected };
+            issueSelected.status = event.target.value;
+            return { issueSelected };
+        });
     }
 
     componentDidMount() {
@@ -62,14 +104,17 @@ class IssueReport extends Component {
                     }
                 </ul>
                 <form>
+                    {/* value={this.state.issueSelected === '' ? '' : this.state.issueSelected} */}
                     <label htmlFor="report__input-id">ID</label>
-                    <input type="text" id="report__input-id" readOnly />
+                    <input type="text" id="report__input-id" value={this.state.issueSelected.id} readOnly />
+                    <label htmlFor="report__input-date">Date</label>
+                    <input type="datetime" id="report__input-date" value={this.state.issueSelected.date} readOnly />
                     <label htmlFor="report__input-title">Title</label>
-                    <input type="text" id="report__input-title" />
+                    <input type="text" id="report__input-title" onChange={this.inputEditTitleHandler} value={this.state.issueSelected.title} />
                     <label htmlFor="report__input-details">Details</label>
-                    <textarea id="report__input-details" cols="30" rows="10"></textarea>
+                    <textarea id="report__input-details" onChange={this.inputEditDetailsHandler} value={this.state.issueSelected.details} cols="30" rows="10"></textarea>
                     <label htmlFor="report__input-status">Status</label>
-                    <select id="report__select-status">
+                    <select id="report__select-status" onChange={this.inputEditStatusHandler} value={this.state.issueSelected.status}>
                         <option value="open">Open</option>
                         <option value="wip">In Progress</option>
                         <option value="closed">Closed</option>
