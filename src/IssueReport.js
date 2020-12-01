@@ -16,9 +16,8 @@ class IssueReport extends Component {
          * date: <date> (in milliseconds for JavaScript Date() constructor )
          * }
          * */
-        
+        issueSelectedId: '',
         issueSelected: {
-            id: '',
             title: '',
             details: '',
             date: '',
@@ -36,7 +35,7 @@ class IssueReport extends Component {
             issueObj[property] = this.state.issueList[selectedIndex][property];
         }
 
-        this.setState({issueSelected: issueObj});
+        this.setState({ issueSelectedId: dataKey, issueSelected: issueObj});
     }
 
     inputEditTitleHandler = (event) => {
@@ -49,7 +48,6 @@ class IssueReport extends Component {
     }
 
     inputEditDetailsHandler = (event) => {
-        // Use updater function
         this.setState(prevState => {
             const issueSelected = { ...prevState.issueSelected };
             issueSelected.details = event.target.value;
@@ -58,12 +56,20 @@ class IssueReport extends Component {
     }
 
     inputEditStatusHandler = (event) => {
-        // Use updater function
         this.setState(prevState => {
             const issueSelected = { ...prevState.issueSelected };
             issueSelected.status = event.target.value;
             return { issueSelected };
         });
+    }
+
+    submitResponseHandler = (event) => {
+        event.preventDefault();
+        const dbRef = firebase.database().ref('active');
+
+        if(this.state.issueSelectedId !== '') {
+            dbRef.child(this.state.issueSelectedId).update(this.state.issueSelected);
+        }
     }
 
     componentDidMount() {
@@ -103,12 +109,12 @@ class IssueReport extends Component {
                     } )
                     }
                 </ul>
-                <form>
+                <form onSubmit={this.submitResponseHandler}>
                     {/* value={this.state.issueSelected === '' ? '' : this.state.issueSelected} */}
                     <label htmlFor="report__input-id">ID</label>
-                    <input type="text" id="report__input-id" value={this.state.issueSelected.id} readOnly />
+                    <input type="text" id="report__input-id" value={this.state.issueSelectedId} readOnly />
                     <label htmlFor="report__input-date">Date</label>
-                    <input type="datetime" id="report__input-date" value={this.state.issueSelected.date} readOnly />
+                    <input type="datetime" id="report__input-date" value={this.state.issueSelected.date ? new Date(this.state.issueSelected.date).toLocaleString() : ''} readOnly />
                     <label htmlFor="report__input-title">Title</label>
                     <input type="text" id="report__input-title" onChange={this.inputEditTitleHandler} value={this.state.issueSelected.title} />
                     <label htmlFor="report__input-details">Details</label>
@@ -119,7 +125,7 @@ class IssueReport extends Component {
                         <option value="wip">In Progress</option>
                         <option value="closed">Closed</option>
                     </select>
-                    <button>Update Response</button>
+                    <button type="submit">Update Response</button>
                 </form>
             </div>
         );
