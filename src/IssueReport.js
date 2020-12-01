@@ -11,9 +11,10 @@ class IssueReport extends Component {
          * issue = {
          * title: <title>,
          * details: <details>,
+         * response: <response>,
          * status: <status>,
-         * id: <id>
-         * date: <date> (in milliseconds for JavaScript Date() constructor )
+         * id: <id>,
+         * dateOpened: <date> (in milliseconds for JavaScript Date() constructor )
          * }
          * */
         issueSelectedId: '',
@@ -87,6 +88,10 @@ class IssueReport extends Component {
         });
     }
 
+    componentWillUnmount() {
+        const dbRef = firebase.database().ref('active');
+        dbRef.off('value');
+    }
 
     render() {
         return (

@@ -25,7 +25,7 @@ class IssueForm extends Component {
             // Note: firebase's ID is also technically an encoded date.
             // But, it's not a good idea to use because if firebase changes the id encoding algorithm
             // it will mess up the website, and that, we have no control of.
-            date: (new Date()).getTime(),
+            dateOpened: (new Date()).getTime(),
             status: 'open',
             response: ''
         });
