@@ -20,20 +20,20 @@ class IssueForm extends Component {
         dbRef.push({
             title: this.state.issueTitle,
             details: this.state.issueDetails,
-            // JavaScript stores date in milliseconds relative to UTC.
+            // JavaScript stores date in milliseconds in UTC.
             // We want to store it as a string in our database.
             // Note: firebase's ID is also technically an encoded date.
-            // But, it's not a good idea because if firebase changes the id encoding algorithm
+            // But, it's not a good idea to use because if firebase changes the id encoding algorithm
             // it will mess up the website, and that, we have no control of.
             date: (new Date()).getTime(),
-            status: "open"
+            status: 'open',
+            response: ''
         });
 
         this.setState({
             issueTitle: '',
             issueDetails: '',
         })
-
     }
 
     inputIssueTitleHandler = (event) => {

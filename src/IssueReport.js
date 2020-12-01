@@ -22,7 +22,7 @@ class IssueReport extends Component {
             details: '',
             dateOpened: '',
             status: '',
-            // response: ''
+            response: ''
         }
         };
     }
@@ -40,7 +40,7 @@ class IssueReport extends Component {
     }
 
     inputEditHandler = (event, property) => {
-        // Use updater function to modify the issueSelected Object that resides in the state object.
+        // Use updater function to modify the specified issue object that resides in the state object.
         this.setState( prevState => {
             const issueSelected = { ...prevState.issueSelected };
             issueSelected[property] = event.target.value;
@@ -48,6 +48,7 @@ class IssueReport extends Component {
         });
     }
 
+    // UPDATES THE DATABASE VALUES
     submitResponseHandler = (event) => {
         event.preventDefault();
         const dbRef = firebase.database().ref('active');
@@ -57,7 +58,14 @@ class IssueReport extends Component {
         }
     }
 
+    // Checks if the issue is closed at live database level
+    isIssueClosed = (selectedId) => {
+        const selectedIndex = this.state.issueList.findIndex(issue => issue.id === selectedId);
+        return this.state.issueList[selectedIndex].status === 'closed';
+    }
+
     componentDidMount() {
+        // RETRIEVES THE DATABASE VALUES AND KEEPS THE LOCAL ARRAY UP TO DATE
         const dbRef = firebase.database().ref('active');
         
         dbRef.on('value', (data) => {
@@ -70,6 +78,7 @@ class IssueReport extends Component {
                     title: firebaseDataObj[id].title,
                     details: firebaseDataObj[id].details,
                     dateOpened: firebaseDataObj[id].dateOpened,
+                    response: firebaseDataObj[id].response,
                     status: firebaseDataObj[id].status
                 });
             }
@@ -95,21 +104,46 @@ class IssueReport extends Component {
                     }
                 </ul>
                 <form onSubmit={this.submitResponseHandler}>
-                    {/* value={this.state.issueSelected === '' ? '' : this.state.issueSelected} */}
                     <label htmlFor="report__input-id">ID</label>
-                    <input type="text" id="report__input-id" value={this.state.issueSelectedId} readOnly />
+                    <input type="text" id="report__input-id" 
+                        value={this.state.issueSelectedId} 
+                        readOnly />
+
                     <label htmlFor="report__input-date-opened">Date Opened</label>
-                    <input type="datetime" id="report__input-date-opened" value={this.state.issueSelected.dateOpened ? new Date(this.state.issueSelected.dateOpened).toLocaleString() : ''} readOnly />
+                    <input type="datetime" id="report__input-date-opened" 
+                        value={this.state.issueSelected.dateOpened ? new Date(this.state.issueSelected.dateOpened).toLocaleString() : ''} 
+                        readOnly />
+
                     <label htmlFor="report__input-title">Title</label>
-                    <input type="text" id="report__input-title" onChange={(event) => this.inputEditHandler(event, 'title')} value={this.state.issueSelected.title} />
+                    <input type="text" id="report__input-title" 
+                        onChange={(event) => this.inputEditHandler(event, 'title')} 
+                        value={this.state.issueSelected.title} 
+                        readOnly={this.state.issueSelected.status === "closed"}/>
+
                     <label htmlFor="report__input-details">Details</label>
-                    <textarea id="report__input-details" onChange={(event) => this.inputEditHandler(event, 'details')} value={this.state.issueSelected.details} cols="30" rows="10"></textarea>
+                    <textarea id="report__input-details" cols="30" rows="10"
+                        onChange={(event) => this.inputEditHandler(event, 'details')} 
+                        value={this.state.issueSelected.details} 
+                        readOnly={this.state.issueSelected.status === "closed"}>
+                    </textarea>
+
+                    <label htmlFor="report__input-response">Response</label>
+                    <textarea id="report__input-response" cols="30" rows="10"
+                        onChange={(event) => this.inputEditHandler(event, 'response')}
+                        value={this.state.issueSelected.response}
+                        readOnly={this.state.issueSelected.status === "closed"}>
+                    </textarea>
+
                     <label htmlFor="report__input-status">Status</label>
-                    <select id="report__select-status" onChange={(event) => this.inputEditHandler(event, 'status')} value={this.state.issueSelected.status}>
+                    <select id="report__select-status" 
+                        onChange={(event) => this.inputEditHandler(event, 'status')} 
+                        value={this.state.issueSelected.status}
+                        disabled={this.state.issueSelectedId ? this.isIssueClosed(this.state.issueSelectedId) : false}>
                         <option value="open">Open</option>
                         <option value="wip">In Progress</option>
                         <option value="closed">Closed</option>
                     </select>
+                    
                     <button type="submit">Update Response</button>
                 </form>
             </div>
