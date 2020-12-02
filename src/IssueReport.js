@@ -77,6 +77,8 @@ class IssueReport extends Component {
         // Use updater function to modify the specified issue object that resides in the state object.
         this.setState( prevState => {
             const issueSelected = { ...prevState.issueSelected };
+            delete issueSelected.id;
+            
             issueSelected[property] = event.target.value;
             return { issueSelected };
         });
@@ -85,7 +87,7 @@ class IssueReport extends Component {
     // Updates the database in response to user submit event
     submitResponseHandler = (event) => {
         event.preventDefault();
-        const dbRef = firebase.database().ref('projectFive/active');
+        const dbRef = firebase.database().ref(`${this.state.projectSelected}/active`);
 
         if(this.state.issueSelectedId !== '') {
             dbRef.child(this.state.issueSelectedId).update(this.state.issueSelected);
