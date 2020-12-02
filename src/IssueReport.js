@@ -59,9 +59,9 @@ class IssueReport extends Component {
                 status: '',
                 response: ''}
             });
-        const dbRef = firebase.database().ref();
+        const dbRefReports = firebase.database().ref('reports');
 
-        dbRef.once('value')
+        dbRefReports.once('value')
             .then( (dbSnap) => {this.updateIssueList(dbSnap)} );
     }
 
@@ -87,10 +87,10 @@ class IssueReport extends Component {
     // Updates the database in response to user submit event
     submitResponseHandler = (event) => {
         event.preventDefault();
-        const dbRef = firebase.database().ref(`${this.state.projectSelected}/active`);
+        const dbRefReports = firebase.database().ref(`reports/${this.state.projectSelected}/active`);
 
         if(this.state.issueSelectedId !== '') {
-            dbRef.child(this.state.issueSelectedId).update(this.state.issueSelected);
+            dbRefReports.child(this.state.issueSelectedId).update(this.state.issueSelected);
         }
     }
 
@@ -102,9 +102,9 @@ class IssueReport extends Component {
 
     componentDidMount() {
         // Retrieves the issues from the database and stores them locally
-        const dbRef = firebase.database().ref();
+        const dbRefReports = firebase.database().ref('reports');
         
-        dbRef.once('value')
+        dbRefReports.once('value')
         .then( (data) => {
             // Initialize the value of projectSelected on page load (if there's a value available).
             let projectName = '';
@@ -117,7 +117,7 @@ class IssueReport extends Component {
             this.setState({projectSelected: projectName}, () => {
                 // Purpose is to update the array of issues on selected project whenever it detects a change in database.
                 // This will take care of what happens in the background inbetween user interactions and not during the interaction itself.
-                dbRef.on('value', (dbSnap) => {
+                dbRefReports.on('value', (dbSnap) => {
                     // Updates the values of projectList 
                     const projectKeys = [];
                     for (let project in dbSnap.val()) {
@@ -133,8 +133,8 @@ class IssueReport extends Component {
     }
 
     componentWillUnmount() {
-        const dbRef = firebase.database().ref();
-        dbRef.off('value');
+        const dbRefReports = firebase.database().ref('reports');
+        dbRefReports.off('value');
     }
 
     render() {

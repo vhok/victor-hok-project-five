@@ -16,27 +16,31 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const dbRef = firebase.database().ref();
-    // This isn't doing anything useful right now.
-    dbRef.on('value', (data) => {
-      console.log(data.val());
-    });
-
-    // I think it's more convenient to put axios request in IssueForm. But, chose this spot because I don't want it to be triggered everytime there's a mount/unmount.
+    // I chose the App component because I don't want it to call axios everytime there's a mount/unmount.
     axios({
-      // url: `https://api.github.com/users/vhok/repos`,
-      // method: `GET`,
-      // respponseType: `json`,
-      // params not needed because only need repo name for now.
+      url: `https://api.github.com/users/vhok/repos`,
+      method: `GET`,
+      responseType: `json`,
+      headers: {
+        Authorization: `token ad2e83aa770043df2594530479e4de404e6170e1` 
+       // This token is read-only. Also, this authorization method via query parameters valid until May 5, 2021.
+       // https://developer.github.com/v3/#authentication
+       // https://developer.github.com/v3/auth/#via-oauth-and-personal-access-tokens
+      }
     })
-    .then(
-      // update the project name list
-    ).catch( (error) => {
+    .then( (response) => {
+      const dbRefProjects = firebase.database().ref('projects-current');
+      const repoArray = response.data.map((repo) => repo.name);
+
+      dbRefProjects.remove();
+      for(let record of repoArray) {
+        dbRefProjects.push(record);
+      }
+    })
+    .catch( (error) => {
       // use local copy
-      
       console.log("axios is catching");
     });
-
   }
 
   render() {

@@ -8,16 +8,18 @@ class IssueForm extends Component {
             // Placeholders to "grab" current typed-in value prior to submit.
             issueTitle: '',
             issueDetails: '',
-            issueDate: ''
+            issueDate: '',
+            issueProject: 'X', // To be replaced.
+            listProjectsCurrent: []
         };
     }
 
     submitIssueHandler = (event) => {
         event.preventDefault();
 
-        const dbRef = firebase.database().ref('projectFive/active');
+        const dbRefIssues = firebase.database().ref(`reports/${this.state.issueProject}/active`);
 
-        dbRef.push({
+        dbRefIssues.push({
             title: this.state.issueTitle,
             details: this.state.issueDetails,
             // JavaScript stores date in milliseconds in UTC.
@@ -48,17 +50,33 @@ class IssueForm extends Component {
         });
     }
 
+    selectProjectHandler = (event) => {
+        this.setState({issueProject: event.target.value});
+    }
+
+    componentDidMount() {
+        const dbRefProjectsCurrent = firebase.database().ref('projects-current');
+
+        dbRefProjectsCurrent.on('value', (dbSnap) => {
+            // Unfinished work. Need to pull from firebase, create an array, map it, and fill out options L77-L79.
+        })
+    }
+
+    componentWillUnmount() {
+
+    }
+
     render() {
         return (
             <div className="submit">
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
                     <h2>A new bug has been discovered in the wild! 🔍</h2>
                     <label htmlFor="submit__select-project">Project</label>
-                    <select id="submit__select-project">
+                    <select id="submit__select-project" onChange={this.selectProjectHandler}>
                         {/* For now, these are just placeholders until I can pull directly from GitHub API without rate limiting calls */}
-                        <option value="one">Project One</option>
-                        <option value="two">Project Two</option>
-                        <option value="five">Project Five</option>
+                        <option value="projectOne">Project One</option>
+                        <option value="projectTwo">Project Two</option>
+                        <option value="projectFive">Project Five</option>
                     </select>
                     <label htmlFor="submit__input-title">Issue Title</label>
                     <input type="text" id="submit__input-title" maxLength="40" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle} />
