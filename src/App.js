@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Component } from 'react';
 import { ReactComponent as Mascot } from './assets/duck-mascot.svg' // Just wanted to experiment with importing svgs as Components
 import firebase from './firebase';
@@ -16,10 +17,26 @@ class App extends Component {
 
   componentDidMount() {
     const dbRef = firebase.database().ref();
-
+    // This isn't doing anything useful right now.
     dbRef.on('value', (data) => {
       console.log(data.val());
     });
+
+    // I think it's more convenient to put axios request in IssueForm. But, chose this spot because I don't want it to be triggered everytime there's a mount/unmount.
+    axios({
+      // url: `https://api.github.com/users/vhok/repos`,
+      // method: `GET`,
+      // respponseType: `json`,
+      // params not needed because only need repo name for now.
+    })
+    .then(
+      // update the project name list
+    ).catch( (error) => {
+      // use local copy
+      
+      console.log("axios is catching");
+    });
+
   }
 
   render() {
@@ -39,10 +56,10 @@ class App extends Component {
           
           <div className="wrapper">
             <nav>
-              <ol>
+              <ul>
                 <li><button onClick={ () => { this.setState({formActive: true, reportActive: false}) }}>Submit Issue</button></li>
                 <li><button onClick={ () => { this.setState({ formActive: false, reportActive: true }) }}>View Report</button></li>
-              </ol>
+              </ul>
             </nav>
             {this.state.formActive ? <IssueForm/> : null}
             {this.state.reportActive ? <IssueReport/> : null}

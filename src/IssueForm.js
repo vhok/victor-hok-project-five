@@ -15,7 +15,7 @@ class IssueForm extends Component {
     submitIssueHandler = (event) => {
         event.preventDefault();
 
-        const dbRef = firebase.database().ref('active');
+        const dbRef = firebase.database().ref('projectFive/active');
 
         dbRef.push({
             title: this.state.issueTitle,
@@ -53,6 +53,13 @@ class IssueForm extends Component {
             <div className="submit">
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
                     <h2>A new bug has been discovered in the wild! 🔍</h2>
+                    <label htmlFor="submit__select-project">Project</label>
+                    <select id="submit__select-project">
+                        {/* For now, these are just placeholders until I can pull directly from GitHub API without rate limiting calls */}
+                        <option value="one">Project One</option>
+                        <option value="two">Project Two</option>
+                        <option value="five">Project Five</option>
+                    </select>
                     <label htmlFor="submit__input-title">Issue Title</label>
                     <input type="text" id="submit__input-title" maxLength="40" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle} />
                     <label htmlFor="submit__input-details">Details</label>

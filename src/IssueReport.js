@@ -24,19 +24,52 @@ class IssueReport extends Component {
             dateOpened: '',
             status: '',
             response: ''
-        }
+        },
+        projectSelected: '',
+        projectList: []
         };
+    }
+
+    updateIssueList = (dbSnap) => {
+        // Updates the values of issueList after projectList fully updated
+        const firebaseDataObj = dbSnap.child(`${this.state.projectSelected}/active`).val();
+        const issues = [];
+
+        for (let id in firebaseDataObj) {
+            issues.push({
+                id: id,
+                title: firebaseDataObj[id].title,
+                details: firebaseDataObj[id].details,
+                dateOpened: firebaseDataObj[id].dateOpened,
+                response: firebaseDataObj[id].response,
+                status: firebaseDataObj[id].status
+            });
+        }
+        // Update the issueList with database values
+        this.setState({ issueList: issues });
+    }
+
+    projectSelectHandler = (event) => {
+        // Need to reset issueSelectedId to prevent looking up bad value
+        this.setState({
+            projectSelected: event.target.value, issueSelectedId: '', issueSelected: {
+                title: '',
+                details: '',
+                dateOpened: '',
+                status: '',
+                response: ''}
+            });
+        const dbRef = firebase.database().ref();
+
+        dbRef.once('value')
+            .then( (dbSnap) => {this.updateIssueList(dbSnap)} );
     }
 
     issueSelectHandler = (event) => {
         const dataKey = event.target.getAttribute('data-key');
         const selectedIndex = this.state.issueList.findIndex( issue => issue.id === dataKey)
-        const issueObj = {};
-
-        for(let property in this.state.issueSelected) {
-            issueObj[property] = this.state.issueList[selectedIndex][property];
-        }
-
+        const issueObj = {...this.state.issueList[selectedIndex]};
+        
         this.setState({ issueSelectedId: dataKey, issueSelected: issueObj});
     }
 
@@ -49,10 +82,10 @@ class IssueReport extends Component {
         });
     }
 
-    // UPDATES THE DATABASE VALUES
+    // Updates the database in response to user submit event
     submitResponseHandler = (event) => {
         event.preventDefault();
-        const dbRef = firebase.database().ref('active');
+        const dbRef = firebase.database().ref('projectFive/active');
 
         if(this.state.issueSelectedId !== '') {
             dbRef.child(this.state.issueSelectedId).update(this.state.issueSelected);
@@ -66,48 +99,71 @@ class IssueReport extends Component {
     }
 
     componentDidMount() {
-        // RETRIEVES THE DATABASE VALUES AND KEEPS THE LOCAL ARRAY UP TO DATE
-        const dbRef = firebase.database().ref('active');
+        // Retrieves the issues from the database and stores them locally
+        const dbRef = firebase.database().ref();
         
-        dbRef.on('value', (data) => {
-            const firebaseDataObj = data.val();
-            const issues = [];
-
-            for(let id in firebaseDataObj) {
-                issues.push({
-                    id: id,
-                    title: firebaseDataObj[id].title,
-                    details: firebaseDataObj[id].details,
-                    dateOpened: firebaseDataObj[id].dateOpened,
-                    response: firebaseDataObj[id].response,
-                    status: firebaseDataObj[id].status
-                });
+        dbRef.once('value')
+        .then( (data) => {
+            // Initialize the value of projectSelected on page load (if there's a value available).
+            let projectName = '';
+            if (data.exists()) {
+                const dataObj = data.val();
+                projectName = Object.keys(dataObj)[0];
             }
 
-            this.setState({issueList: issues});
-        });
+            // Wait for projectSelected to get new value and then activate the on listener
+            this.setState({projectSelected: projectName}, () => {
+                // Purpose is to update the array of issues on selected project whenever it detects a change in database.
+                // This will take care of what happens in the background inbetween user interactions and not during the interaction itself.
+                dbRef.on('value', (dbSnap) => {
+                    // Updates the values of projectList 
+                    const projectKeys = [];
+                    for (let project in dbSnap.val()) {
+                        projectKeys.push(project);
+                    }
+
+                    this.setState({projectList: projectKeys}, () => {
+                        this.updateIssueList(dbSnap);
+                    });
+                });
+            });
+        })
     }
 
     componentWillUnmount() {
-        const dbRef = firebase.database().ref('active');
+        const dbRef = firebase.database().ref();
         dbRef.off('value');
     }
 
     render() {
         return (
             <div className="report">
-                <ul>
-                    {this.state.issueList.map( (issue) => {
-                        return (
-                            // Create a custom data-key attribute to embed the firebase record id into the element.
-                            // This creates an association between the button and the firebase id in which the programmer (myself) can access. 
-                            <li key={issue.id}>
-                                <button onClick={this.issueSelectHandler} data-key={issue.id}>{issue.title}</button>
-                            </li>
-                        );
-                    } )
+                <div className="report__div-project-dash">
+                    {/* List of projects */}
+                    <label htmlFor="report__select-project"></label>
+                    <select id="report__select-project" onChange={ (event) => {this.projectSelectHandler(event);} }>
+                        {this.state.projectList.map( (project) => {
+                            return (
+                                <option key={project} value={project}>{project}</option>
+                            );
+                        })}
+                    </select>
+
+                    {/* List of issues */}
+                    <ol>
+                        {this.state.issueList.map( (issue) => {
+                            return (
+                                // Create a custom data-key attribute to embed the firebase record id into the element.
+                                // This creates an association between the button and makes available the firebase id in which the programmer can access. 
+                                <li key={issue.id}>
+                                    <button onClick={this.issueSelectHandler} data-key={issue.id}>{issue.title}</button>
+                                </li>
+                            );
+                        } )
                     }
-                </ul>
+                    </ol>
+                </div>
+
                 <form onSubmit={this.submitResponseHandler}>
                     <label htmlFor="report__input-id">ID</label>
                     <input type="text" id="report__input-id" 

@@ -2,11 +2,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    ol {
+
+    div.report__div-project-dash {
         padding: 20px;
         align-self: flex-start;
         overflow-y: auto;
+
+        select {
+            margin-bottom: 20px;
+        }
     }
 
     form {
