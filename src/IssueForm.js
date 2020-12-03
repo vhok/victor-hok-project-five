@@ -9,33 +9,36 @@ class IssueForm extends Component {
             issueTitle: '',
             issueDetails: '',
             issueDate: '',
-            issueProject: 'X', // To be replaced.
-            listProjectsCurrent: []
+            issueProject: '', // To be replaced.
+            currentProjectsList: [] // [ {id: <projectId>, title: <projectName>},... ]
         };
     }
 
     submitIssueHandler = (event) => {
         event.preventDefault();
 
-        const dbRefIssues = firebase.database().ref(`reports/${this.state.issueProject}/active`);
-
-        dbRefIssues.push({
-            title: this.state.issueTitle,
-            details: this.state.issueDetails,
-            // JavaScript stores date in milliseconds in UTC.
-            // We want to store it as a string in our database.
-            // Note: firebase's ID is also technically an encoded date.
-            // But, it's not a good idea to use because if firebase changes the id encoding algorithm
-            // it will mess up the website, and that, we have no control of.
-            dateOpened: (new Date()).getTime(),
-            status: 'open',
-            response: ''
-        });
-
-        this.setState({
-            issueTitle: '',
-            issueDetails: '',
-        })
+        // Check if a select option other than the placeholder is selected.
+        if(this.state.issueProject) {
+            const dbRefIssues = firebase.database().ref(`reports/${this.state.issueProject}/active`);
+    
+            dbRefIssues.push({
+                title: this.state.issueTitle,
+                details: this.state.issueDetails,
+                // JavaScript stores date in milliseconds in UTC.
+                // We want to store it as a string in our database.
+                // Note: firebase's ID is also technically an encoded date.
+                // But, it's not a good idea to use because if firebase changes the id encoding algorithm
+                // it will mess up the website, and that, we have no control of.
+                dateOpened: (new Date()).getTime(),
+                status: 'open',
+                response: ''
+            });
+    
+            this.setState({
+                issueTitle: '',
+                issueDetails: '',
+            })
+        }
     }
 
     inputIssueTitleHandler = (event) => {
@@ -57,13 +60,26 @@ class IssueForm extends Component {
     componentDidMount() {
         const dbRefProjectsCurrent = firebase.database().ref('projects-current');
 
+        // Update the project list array when database changes.
         dbRefProjectsCurrent.on('value', (dbSnap) => {
-            // Unfinished work. Need to pull from firebase, create an array, map it, and fill out options L77-L79.
+            const projectList = [];
+            const currentProjectsObj = dbSnap.val();
+
+            for(let projectId in currentProjectsObj) {
+                projectList.push({
+                    id: projectId,
+                    title: currentProjectsObj[projectId]
+                });
+            }
+
+            this.setState({currentProjectsList: projectList});
         })
     }
 
     componentWillUnmount() {
+        const dbRefProjectsCurrent = firebase.database().ref('projects-current');
 
+        dbRefProjectsCurrent.off('value');
     }
 
     render() {
@@ -72,11 +88,16 @@ class IssueForm extends Component {
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
                     <h2>A new bug has been discovered in the wild! 🔍</h2>
                     <label htmlFor="submit__select-project">Project</label>
-                    <select id="submit__select-project" onChange={this.selectProjectHandler}>
+                    <select id="submit__select-project" onChange={this.selectProjectHandler} defaultValue="placeholder">
                         {/* For now, these are just placeholders until I can pull directly from GitHub API without rate limiting calls */}
-                        <option value="projectOne">Project One</option>
-                        <option value="projectTwo">Project Two</option>
-                        <option value="projectFive">Project Five</option>
+                        <option value="placeholder" disabled>Select a repository</option>
+                        {
+                            this.state.currentProjectsList.map( (project) => {
+                                return (
+                                    <option value={project.title} key={project.id}>{project.title}</option>
+                                );
+                            })
+                        }
                     </select>
                     <label htmlFor="submit__input-title">Issue Title</label>
                     <input type="text" id="submit__input-title" maxLength="40" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle} />

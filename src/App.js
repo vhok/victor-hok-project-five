@@ -20,13 +20,7 @@ class App extends Component {
     axios({
       url: `https://api.github.com/users/vhok/repos`,
       method: `GET`,
-      responseType: `json`,
-      headers: {
-        Authorization: `token ad2e83aa770043df2594530479e4de404e6170e1` 
-       // This token is read-only. Also, this authorization method via query parameters valid until May 5, 2021.
-       // https://developer.github.com/v3/#authentication
-       // https://developer.github.com/v3/auth/#via-oauth-and-personal-access-tokens
-      }
+      responseType: `json`
     })
     .then( (response) => {
       const dbRefProjects = firebase.database().ref('projects-current');
