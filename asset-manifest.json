@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/victor-hok-project-five/static/css/main.54c961d5.chunk.css",
+    "main.js": "/victor-hok-project-five/static/js/main.1ce348bb.chunk.js",
+    "main.js.map": "/victor-hok-project-five/static/js/main.1ce348bb.chunk.js.map",
+    "runtime-main.js": "/victor-hok-project-five/static/js/runtime-main.a86fe1a2.js",
+    "runtime-main.js.map": "/victor-hok-project-five/static/js/runtime-main.a86fe1a2.js.map",
+    "static/js/2.63c0798e.chunk.js": "/victor-hok-project-five/static/js/2.63c0798e.chunk.js",
+    "static/js/2.63c0798e.chunk.js.map": "/victor-hok-project-five/static/js/2.63c0798e.chunk.js.map",
+    "static/js/3.2ac4861f.chunk.js": "/victor-hok-project-five/static/js/3.2ac4861f.chunk.js",
+    "static/js/3.2ac4861f.chunk.js.map": "/victor-hok-project-five/static/js/3.2ac4861f.chunk.js.map",
+    "index.html": "/victor-hok-project-five/index.html",
+    "static/css/main.54c961d5.chunk.css.map": "/victor-hok-project-five/static/css/main.54c961d5.chunk.css.map",
+    "static/js/2.63c0798e.chunk.js.LICENSE.txt": "/victor-hok-project-five/static/js/2.63c0798e.chunk.js.LICENSE.txt",
+    "static/media/duck-mascot.76c7117a.svg": "/victor-hok-project-five/static/media/duck-mascot.76c7117a.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a86fe1a2.js",
+    "static/js/2.63c0798e.chunk.js",
+    "static/css/main.54c961d5.chunk.css",
+    "static/js/main.1ce348bb.chunk.js"
+  ]
+}
