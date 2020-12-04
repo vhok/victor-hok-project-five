@@ -5,15 +5,15 @@ class IssueForm extends Component {
     constructor() {
         super();
         this.state = {
-            // Placeholders to "grab" current typed-in value prior to submit.
             issueTitle: '',
             issueDetails: '',
             issueDate: '',
-            issueProject: '', // To be replaced.
-            currentProjectsList: [] // [ {id: <projectId>, title: <projectName>},... ]
+            issueProject: '',
+            currentProjectsList: [] // [ {id: <projectId>, title: <projectName>}, ...] - Array of project objects with id & title values. 
         };
     }
 
+    // When submit button is triggered. This function will push whatever data is in the input fields at that time (state property values) to firebase. It will then clear the input boxes in preparation for next submit.
     submitIssueHandler = (event) => {
         event.preventDefault();
 
@@ -27,8 +27,8 @@ class IssueForm extends Component {
                 // JavaScript stores date in milliseconds in UTC.
                 // We want to store it as a string in our database.
                 // Note: firebase's ID is also technically an encoded date.
-                // But, it's not a good idea to use because if firebase changes the id encoding algorithm
-                // it will mess up the website, and that, we have no control of.
+                // But, it's not a good idea to use it for time stamps because if firebase changes the id encoding algorithm
+                // it will mess up the website in the future, and that, we have no control of.
                 dateOpened: (new Date()).getTime(),
                 status: 'open',
                 response: ''
@@ -41,18 +41,21 @@ class IssueForm extends Component {
         }
     }
 
+    // This event handler will update the value of the title in state each time its respective input field changes.
     inputIssueTitleHandler = (event) => {
         this.setState({
             issueTitle: event.target.value
         });
     }
 
+    // This event handler will update the value of details in state each time its respective input field changes.
     inputIssueDetailsHandler = (event) => {
         this.setState({
             issueDetails: event.target.value
         });
     }
 
+    // This event handler will update the project value of state when user selects between projects under the dropdown list.
     selectProjectHandler = (event) => {
         this.setState({issueProject: event.target.value});
     }
@@ -60,7 +63,7 @@ class IssueForm extends Component {
     componentDidMount() {
         const dbRefProjectsCurrent = firebase.database().ref('projects-current');
 
-        // Update the project list array when database changes.
+        // When firebase data changes the project dropdown list is updated by the callback function in this .on() method.
         dbRefProjectsCurrent.on('value', (dbSnap) => {
             const projectList = [];
             const currentProjectsObj = dbSnap.val();
@@ -79,14 +82,15 @@ class IssueForm extends Component {
     componentWillUnmount() {
         const dbRefProjectsCurrent = firebase.database().ref('projects-current');
 
+        // Need to turn off the firebase event listener that's activated in componentDidMount() (otherwise, it'll be in limbo when this component gets unmounted which it likely will if user switches back and forth using navigation bar).
         dbRefProjectsCurrent.off('value');
     }
 
     render() {
         return (
             <div className="submit">
+                <h2>A new bug has been discovered in the wild! 🔍</h2>
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
-                    <h2>A new bug has been discovered in the wild! 🔍</h2>
                     <label htmlFor="submit__select-project">Project</label>
                     <select id="submit__select-project" onChange={this.selectProjectHandler} defaultValue="placeholder">
                         {/* For now, these are just placeholders until I can pull directly from GitHub API without rate limiting calls */}
@@ -102,7 +106,7 @@ class IssueForm extends Component {
                     <label htmlFor="submit__input-title">Issue Title</label>
                     <input type="text" id="submit__input-title" maxLength="40" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle} />
                     <label htmlFor="submit__input-details">Details</label>
-                    <textarea id="submit__input-details" cols="30" rows="10" required onChange={this.inputIssueDetailsHandler} value={this.state.issueDetails}></textarea>
+                    <textarea id="submit__input-details" required onChange={this.inputIssueDetailsHandler} value={this.state.issueDetails}></textarea>
                     <button type="submit">Submit</button>
                     {/* NEED TO PROVIDE ID BACK TO USER AT SOME POINT FOR REFERENCE */}
                 </form>

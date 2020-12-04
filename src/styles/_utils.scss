@@ -2,20 +2,30 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}bo
 
 .clearfix:after {visibility: hidden; display: block; font-size: 0; content: ''; clear: both; height: 0; }
 
-html { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;}
+html { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; font-size: 62.5%;}
 
 *, *:before, *:after {box-sizing: inherit}
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+body, select, button, input, textarea {
+    margin: 0;
+    font-family: 'Caveat', cursive;
+}
+
+.wrapper {
+    width: 90%;
+    max-width: $max-width;
+}
+
 img {
     display: block;
     width: 100%;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
 }
 
 ul, ol {
@@ -24,20 +34,26 @@ ul, ol {
     margin: 0;
 }
 
-li {
-
+select {
+    text-align-last: center;
+    text-align: center;
 }
 
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+h2 {
+    font-size: 2.8rem;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+p, a, label, button, select, input, textarea {
+    font-size: 2.5rem;
 }
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.mobile--only {
+    display: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
