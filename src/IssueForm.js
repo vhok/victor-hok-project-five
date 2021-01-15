@@ -41,23 +41,11 @@ class IssueForm extends Component {
         }
     }
 
-    // This event handler will update the value of the title in state each time its respective input field changes.
-    inputIssueTitleHandler = (event) => {
+    // A general purpose event handler that is called when a change is detected in the children form elements and updates corresponding state properties.
+    inputIssueHandler = (event) => {
         this.setState({
-            issueTitle: event.target.value
+            [event.target.id]: event.target.value
         });
-    }
-
-    // This event handler will update the value of details in state each time its respective input field changes.
-    inputIssueDetailsHandler = (event) => {
-        this.setState({
-            issueDetails: event.target.value
-        });
-    }
-
-    // This event handler will update the project value of state when user selects between projects under the dropdown list.
-    selectProjectHandler = (event) => {
-        this.setState({issueProject: event.target.value});
     }
 
     componentDidMount() {
@@ -91,8 +79,8 @@ class IssueForm extends Component {
             <div className="submit">
                 <h2>A new bug has been discovered in the wild! 🔍</h2>
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
-                    <label htmlFor="submit__select-project">Project</label>
-                    <select id="submit__select-project" onChange={this.selectProjectHandler} defaultValue="placeholder">
+                    <label htmlFor="issueProject">Project</label>
+                    <select id="issueProject" onChange={this.inputIssueHandler} defaultValue="placeholder">
                         {/* For now, these are just placeholders until I can pull directly from GitHub API without rate limiting calls */}
                         <option value="placeholder" disabled>Select a repository</option>
                         {
@@ -103,10 +91,10 @@ class IssueForm extends Component {
                             })
                         }
                     </select>
-                    <label htmlFor="submit__input-title">Issue Title</label>
-                    <input type="text" id="submit__input-title" maxLength="40" required onChange={this.inputIssueTitleHandler} value={this.state.issueTitle} />
-                    <label htmlFor="submit__input-details">Details</label>
-                    <textarea id="submit__input-details" required onChange={this.inputIssueDetailsHandler} value={this.state.issueDetails}></textarea>
+                    <label htmlFor="issueTitle">Issue Title</label>
+                    <input type="text" id="issueTitle" maxLength="40" required onChange={this.inputIssueHandler} value={this.state.issueTitle} />
+                    <label htmlFor="issueDetails">Details</label>
+                    <textarea id="issueDetails" required onChange={this.inputIssueHandler} value={this.state.issueDetails}></textarea>
                     <button type="submit">Submit</button>
                     {/* NEED TO PROVIDE ID BACK TO USER AT SOME POINT FOR REFERENCE */}
                 </form>
