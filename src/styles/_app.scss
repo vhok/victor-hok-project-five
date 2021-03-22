@@ -58,13 +58,12 @@ main {
         }
 
         button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
+            @include std-button;
+            margin: 0 5px;
         }
 
         button:hover, button:focus {
-            text-decoration: underline; // FOR NOW, make a cooler one later
+            @include std-button--hover;
         }
     } 
 }

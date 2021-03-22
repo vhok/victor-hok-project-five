@@ -51,6 +51,14 @@
             resize: none;
             height: 150px;
         }
+
+        button {
+            @include std-button;
+        }
+
+        button:hover, button:focus {
+            @include std-button--hover;
+        }
     }
 
     .report__div-fields {
