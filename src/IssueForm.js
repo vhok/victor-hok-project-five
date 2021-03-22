@@ -95,7 +95,7 @@ class IssueForm extends Component {
                     <input type="text" id="issueTitle" maxLength="40" required onChange={this.inputIssueHandler} value={this.state.issueTitle} />
                     <label htmlFor="issueDetails">Details</label>
                     <textarea id="issueDetails" required onChange={this.inputIssueHandler} value={this.state.issueDetails}></textarea>
-                    <button type="submit">Submit</button>
+                    <button type="submit">Submit Issue</button>
                     {/* NEED TO PROVIDE ID BACK TO USER AT SOME POINT FOR REFERENCE */}
                 </form>
             </div>

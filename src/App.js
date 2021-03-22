@@ -79,8 +79,8 @@ class App extends Component {
           <div className="wrapper">
             <nav>
               <ul>
-                <li><button onClick={ () => { this.setState({formActive: true, reportActive: false}) }}>Submit Issue</button></li>
-                <li><button onClick={ () => { this.setState({ formActive: false, reportActive: true }) }}>View Report</button></li>
+                <li><button onClick={ () => { this.setState({formActive: true, reportActive: false}) }}>View Form</button></li>
+                <li><button onClick={ () => { this.setState({ formActive: false, reportActive: true }) }}>View Issues</button></li>
                 {/* <li className="mobile--only"><button>Select Issue</button></li> --> FUTURE IMPLEMENTATION*/}
               </ul>
             </nav>
