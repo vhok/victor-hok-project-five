@@ -76,8 +76,8 @@ class IssueForm extends Component {
 
     render() {
         return (
-            <div className={"submit " + `${this.state.issueTitle ? 'good' : 'bad'}`}>
-                <h2>A new bug has been discovered in the wild! 🔍</h2>
+            <div className="submit">
+                <h2>Submit an issue to be tracked 🔍</h2>
                 <form className="submit__form" onSubmit={this.submitIssueHandler}>
                     <label htmlFor="issueProject">Project</label>
                     <select id="issueProject" onChange={this.inputIssueHandler} defaultValue="placeholder">

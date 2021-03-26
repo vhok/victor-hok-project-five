@@ -1,18 +1,12 @@
 .report {
     display: flex;
-    justify-content: center;
     align-items: center;
-    position: relative;
 
     .report__div-project-list {
-        padding: 20px;
+        padding: 10px;
         align-self: flex-start;
         overflow: auto;
-
-        position: absolute; // take project-list out of flow to allow form to properly center
-        max-height: 100%; // ensures that scroll can happen when the position is absolute
-        top: 0;
-        right: 75%;
+        width: 300px;
         min-width: 150px;
 
         select {

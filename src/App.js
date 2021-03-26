@@ -70,7 +70,7 @@ class App extends Component {
               </p>
               <img src={speech} alt="A rubber duck with a chatbox recommending to talk with it through coding problems"/>
             </div>
-            <Mascot fill="#ffffff" width="10%" />
+            <Mascot fill="#EFFD5F" width="10%" />
           </div>
         </header>
 
