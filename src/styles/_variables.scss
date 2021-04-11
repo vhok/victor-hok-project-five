@@ -23,3 +23,18 @@ $mobile-width: 900px;
     color: #000;
     border: 1px solid #000;
 }
+
+@mixin std-button-invert {
+    padding: 7px;
+    background-color: transparent;
+    color: #000;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+@mixin std-button-invert--hover {
+    background-color: $primary-color;
+    color: #fff;
+    border: 1px solid $primary-color;
+}

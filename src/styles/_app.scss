@@ -58,12 +58,12 @@ main {
         }
 
         a {
-            @include std-button;
+            @include std-button-invert;
             margin: 0 5px;
         }
 
         a:hover, a:focus {
-            @include std-button--hover;
+            @include std-button-invert--hover;
         }
     } 
 }
